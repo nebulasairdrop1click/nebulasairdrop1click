@@ -419,7 +419,7 @@
                 var status = resp.result.status;
                 if(status == 1){
                     clearInterval(task);
-                    callback();
+                    callback(resp);
                 }
             })
         }, 1000);
@@ -455,12 +455,12 @@
                         $('#packing').modal('show');
                     }
                     var hash = resp.txhash;
-                    recheckTransactionReceipt(hash, function () {
+                    recheckTransactionReceipt(hash, function (resp) {
                         $('#packing').modal('hide');
                         $('#packing_success').modal('show');
                         function clearWait() {
                             clearInterval(wait);
-                            callback();
+                            callback(resp);
                         }
                         var wait = setInterval(clearWait, 2000);
                     })
@@ -496,8 +496,8 @@
                     args.push(parseInt($("#num").val()));
                     args.push(canTakeout);
                     var value = 0;
-                    callNebPay(fun, args, value, function(){
-                        window.location.href = window.location.href;
+                    callNebPay(fun, args, value, function(resp){
+                        window.location.href = window.location.href+ "?index="+ resp.result.execute_result +"&action=pay";
                     });
                 } else {
                     $("#receiverAcc").val('');
@@ -514,7 +514,7 @@
             var args = [];
             args.push(index);
             args.push(memo);
-            callNebPay(fun, args, value, function () {
+            callNebPay(fun, args, value, function (resp) {
                 window.location.href = window.location.href;
             });
         }
