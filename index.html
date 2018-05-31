@@ -523,7 +523,7 @@
             args.push(index);
             args.push(memo);
             callNebPay(fun, args, value, function (resp) {
-                window.location.href = window.location.href;
+                window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname + "?index=" + index +"&action=view&address=" + resp.result.from;
             });
         }
     }
@@ -535,8 +535,8 @@
             args.push(index);
             args.push(amount);
             var value = 0;
-            callNebPay(fun, args, value, function () {
-                window.location.href = window.location.href;
+            callNebPay(fun, args, value, function (resp) {
+                window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname + "?index=" + index +"&action=takenOut&address=" + resp.result.from;
             });
         }
     }
