@@ -643,7 +643,7 @@
                             result = JSON.parse(result);
                             var skeleton;
                             var data;
-                            var toTake = Unit.fromBasic(result.paid, "nas") - Unit.fromBasic(result.takenOut, "nas");
+                            var toTake = Unit.fromBasic(result.paid - result.takenOut, "nas");
                             if(result.validLimit){
                                 toTake = Math.min(Unit.fromBasic(result.takeOutLimit, "nas"), toTake);
                             }
