@@ -245,6 +245,8 @@
     $("#receiverBillDiv").toggle();
     $("#takerBillDiv").toggle();
     $("#payerBillDiv").toggle();
+    var chainId = 1001;
+    var rpcURL = "https://testnet.nebulas.io";
     var dappAddress = "n1yVzcHX1BgddoerbP1tuQ4duACiPFkqhbt";
     if(chainId == 1){
         $("#contract").prop('href','https://explorer.nebulas.io/#/address/'+ dappAddress +'#/').prop('target', '_blank_');
