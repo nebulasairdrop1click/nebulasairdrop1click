@@ -245,9 +245,9 @@
     $("#receiverBillDiv").toggle();
     $("#takerBillDiv").toggle();
     $("#payerBillDiv").toggle();
-    var chainId = 1001;
-    var rpcURL = "https://testnet.nebulas.io";
-    var dappAddress = "n1yVzcHX1BgddoerbP1tuQ4duACiPFkqhbt";
+    var chainId = 1;
+    var rpcURL = "https://mainnet.nebulas.io";
+    var dappAddress = "n1pjws9vkbfBrwNks9HmaJgYa4TjC7iMEGm";
     if(chainId == 1){
         $("#contract").prop('href','https://explorer.nebulas.io/#/address/'+ dappAddress +'#/').prop('target', '_blank_');
     } else {
@@ -553,10 +553,9 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null'){
+                        if(result === 'null' || result === ''){
                             return;
                         }
-                        console.log(resp);
                         try{
                             result = JSON.parse(result);
                             var skeleton;
@@ -599,10 +598,9 @@
                     innerCall(fun, args, 0, function(params){
                         neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                             var result = resp.result;
-                            if(result === 'null'){
+                            if(result === 'null' || result === ''){
                                 return;
                             }
-                            console.log(resp);
                             try{
                                 result = JSON.parse(result);
                                 addInitiatorBill(result);
@@ -639,10 +637,9 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null'){
+                        if(result === 'null'  || result === ''){
                             return;
                         }
-                        console.log(resp);
                         try{
                             result = JSON.parse(result);
                             var skeleton;
@@ -690,10 +687,9 @@
                     innerCall(fun, args, 0, function(params){
                         neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                             var result = resp.result;
-                            if(result === 'null'){
+                            if(result === 'null' || result === ''){
                                 return;
                             }
-                            console.log(resp);
                             try{
                                 result = JSON.parse(result);
                                 addReceiverBill(result);
@@ -731,10 +727,9 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null'){
+                        if(result === 'null'  || result === ''){
                             return;
                         }
-                        console.log(resp);
                         try{
                             result = JSON.parse(result);
                             var skeleton;
@@ -778,10 +773,9 @@
                     innerCall(fun, args, 0, function(params){
                         neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                             var result = resp.result;
-                            if(result === 'null'){
+                            if(result === 'null' || result === ''){
                                 return;
                             }
-                            console.log(resp);
                             try{
                                 result = JSON.parse(result);
                                 addTakerBill(result);
@@ -820,10 +814,9 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null'){
+                        if(result === 'null' || result === ''){
                             return;
                         }
-                        console.log(resp);
                         try{
                             result = JSON.parse(result);
                             var skeleton;
@@ -866,10 +859,9 @@
                     innerCall(fun, args, 0, function(params){
                         neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                             var result = resp.result;
-                            if(result === 'null'){
+                            if(result === 'null' || result === ''){
                                 return;
                             }
-                            console.log(result);
                             try{
                                 result = JSON.parse(result);
                                 addPayerBill(result);
@@ -903,10 +895,9 @@
         innerCall(fun, args, 0, function(params){
             neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                 var result = resp.result;
-                if(result === 'null'){
+                if(result === 'null' || result === ''){
                     return;
                 }
-                console.log(resp);
                 try{
                     result = JSON.parse(result);
                     $("#billName").val(result.billName);
