@@ -361,8 +361,6 @@
         canTakeout = !!$(this).is(':checked');
     });
 
-    $('#canTakeout').prop('disabled', true);
-
     $('#unlimitedAmount').click(function () {
         if ($(this).is(':checked')) {
             amount.val(0);
