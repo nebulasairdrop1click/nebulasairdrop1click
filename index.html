@@ -507,7 +507,7 @@
                         clearInterval(wait);
                         window.location.href = window.location.href
                     }
-                    var wait = setInterval(clearWait, 2000);
+                    var wait = setInterval(clearWait, 3000);
                     if(respObject.code === 0){
                         clearInterval(intervalQuery);
                     }
@@ -545,7 +545,6 @@
 
             if(window.mobileAndTabletcheck()){
                 $('#confirm').modal('hide');
-                $('#packing_refresh').modal('show');
                 intervalQuery = setInterval(function () {
                     funcIntervalQuery(callback);
                 }, 5000);
