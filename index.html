@@ -50,7 +50,7 @@
             <div class="bill-panel">
             <div class="bqe">
                 <input class="form-control" type="text" placeholder="搜索..." id="addressSearch">
-                <button type="submit" class="nz" onclick="search()">
+                <button id="searchBTN" class="nz" onclick="search()">
                     <span class="bv bhw"></span>
                 </button>
             </div>
@@ -399,6 +399,12 @@
         }
     });
 
+    $("#addressSearch").keyup(function(event) {
+        if (event.keyCode === 13) {
+            $("#searchBTN").click();
+        }
+    });
+
     var needCheckNASWallet = true;
 
     function checkNASWallet() {
@@ -503,7 +509,7 @@
             "function": fun,
             "args": JSON.stringify(args)
         };
-        console.log(params.from.getAddressString() + ' call ' + params.to + ' @ ' + fun + ": " + JSON.stringify(args) + ' with value: ' + value);
+//        console.log(params.from.getAddressString() + ' call ' + params.to + ' @ ' + fun + ": " + JSON.stringify(args) + ' with value: ' + value);
         callback(params);
     }
 
@@ -633,7 +639,6 @@
             $('#invalidSearch').modal('show');
         }
     }
-
 
 
     //    setCanTakeout
@@ -1083,6 +1088,8 @@
                         canTakeout = false;
                     }
 
+                    console.log('addressWallet: ' + addressWallet + '; initiatorAcc: ' + result.initiatorAcc);
+
                     if(addressWallet === result.initiatorAcc){
                         $("#canTakeout").prop('disabled', false).prop("onclick", null).off('click').click(function(){ setCanTakeout(parseInt(result.id), !canTakeout); });
                     }
@@ -1167,20 +1174,29 @@
         $("#unlimitedAmount").prop('disabled', true);
         $("#unconstrainedAmount").prop('disabled', true);
 
-
-        getSplitBill(index, function(){
+        window.addEventListener('message', function (e) {
+            if (e.data.data && !!e.data.data.account) {
+                if(address === '') address = e.data.data.account;
+                addressWallet = e.data.data.account;
+            }
+            if(address !== ''){
+                getSplitBill(index, function(){});
+            }
         });
-        getInitiatorBill();
-        getReceiverBill();
-        getTakerBill();
-        getPayerBill();
+
+        window.postMessage({
+            "target": "contentscript",
+            "data": {},
+            "method": "getAccount",
+        }, "*");
     } else{
         $("#submit").html("确认收款");
-        getInitiatorBill();
-        getReceiverBill();
-        getTakerBill();
-        getPayerBill();
     }
+
+    getInitiatorBill();
+    getReceiverBill();
+    getTakerBill();
+    getPayerBill();
 
 
 </script>
