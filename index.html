@@ -501,13 +501,15 @@
         nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     var respObject = JSON.parse(resp);
-                    console.log(resp);
+                    $('#packing').modal('hide');
+                    $('#packing_refresh').modal('show');
+                    function clearWait() {
+                        clearInterval(wait);
+                        window.location.href = window.location.href
+                    }
+                    var wait = setInterval(clearWait, 2000);
                     if(respObject.code === 0){
                         clearInterval(intervalQuery);
-                        $('#packing').modal('hide');
-                        $('#packing_success').modal('show');
-                        window.location.href = window.location.href
-
                     }
                 })
                 .catch(function (err) {
@@ -1163,6 +1165,27 @@
             </div>
             <div class="modal-body">
                 <p>交易正在打包，请稍等十几秒钟。</p>
+            </div>
+            <div class="modal-footer" style="padding-top: 10px">
+                <br>
+
+                <div class="btn btn-primary ld-ext-right running">正在打包交易...
+                    <div class="ld ld-hourglass ld-spin-fast"></div>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="packing_refresh" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">通知</h4>
+            </div>
+            <div class="modal-body">
+                <p>您使用的是移动客户端，请您手动刷新获取最新支付信息，正在为您刷新。</p>
             </div>
             <div class="modal-footer" style="padding-top: 10px">
                 <br>
