@@ -11,6 +11,9 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/toolkit-light.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="css/application.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="css/form-validation.css" rel="stylesheet">
@@ -45,6 +48,12 @@
     <div class="row">
         <div class="col-md-4 order-md-2 mb-4">
             <div class="bill-panel">
+            <div class="bqe">
+                <input class="form-control" type="text" placeholder="搜索..." id="addressSearch">
+                <button type="submit" class="nz" onclick="search()">
+                    <span class="bv bhw"></span>
+                </button>
+            </div>
             <h4 class="d-flex justify-content-between align-items-center mb-3  panel-heading" onclick="toggleDiv('initiatorBillDiv')">
                 <span class="text-muted">待付款</span>
                 <span class="badge badge-secondary badge-pill" id="initiatorBillNum">0</span>
@@ -358,7 +367,11 @@
     });
 
     $('#canTakeout').click(function () {
-        canTakeout = !!$(this).is(':checked');
+        if(action === 'pay' || action === 'view' || action === 'takeout'){
+
+        } else{
+            canTakeout = !!$(this).is(':checked');
+        }
     });
 
     $('#unlimitedAmount').click(function () {
@@ -385,7 +398,6 @@
             num.prop('readonly', false);
         }
     });
-
 
     var needCheckNASWallet = true;
 
@@ -598,7 +610,7 @@
                     callNebPay(fun, args, value, function(resp){
                         function clearWait() {
                             clearInterval(wait);
-                            window.location.href = window.location.href+ "?index="+ resp.result.execute_result +"&action=pay&address=" + resp.result.from;
+                            window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname+ "?index="+ resp.result.execute_result +"&action=pay&address=" + resp.result.from;
                         }
                         var wait = setInterval(clearWait, 2000);
                     });
@@ -610,6 +622,21 @@
         }
     }
 
+    function search(){
+        var addressSearch = $("#addressSearch");
+        if(parseInt(addressSearch.val()) >= 0){
+            window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname+ "?index="+ parseInt(addressSearch.val()) +"&action=pay&address=" + addressWallet;
+        } else if(Account.isValidAddress(addressSearch.val())){
+            window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname+ "?address=" + addressSearch.val();
+        } else {
+            addressSearch.val('');
+            $('#invalidSearch').modal('show');
+        }
+    }
+
+
+
+    //    setCanTakeout
 
     function pay(index, value, memo){
         if (checkNASWallet()) {
@@ -646,7 +673,26 @@
         }
     }
 
+    function setCanTakeout(index, can){
+        if (checkNASWallet()) {
+            var fun = 'setCanTakeout';
+            var args = [];
+            args.push(index);
+            args.push(can);
+            var value = 0;
+            callNebPay(fun, args, value, function (resp) {
+                function clearWait() {
+                    clearInterval(wait);
+                    window.location.href = window.location.href;
+                }
+                var wait = setInterval(clearWait, 2000);
+
+            });
+        }
+    }
+
     var address = '';
+    var addressWallet = '';
     var initiatorBL = $("#initiatorBillList");
     function addInitiatorBill(bills){
         $("#initiatorBillNum").html(bills.length);
@@ -696,6 +742,7 @@
         window.addEventListener('message', function (e) {
             if (e.data.data && !!e.data.data.account) {
                 if(address === '') address = e.data.data.account;
+                addressWallet = e.data.data.account;
             }
             if(address !== ''){
                 var fun = 'getInitiatorBill';
@@ -784,6 +831,7 @@
         window.addEventListener('message', function (e) {
             if (e.data.data && !!e.data.data.account) {
                 if(address === '') address = e.data.data.account;
+                addressWallet = e.data.data.account;
             }
 
             if(address !== ''){
@@ -872,6 +920,7 @@
         window.addEventListener('message', function (e) {
             if (e.data.data && !!e.data.data.account) {
                 if(address === '') address = e.data.data.account;
+                addressWallet = e.data.data.account;
             }
 
             if(address !== ''){
@@ -959,6 +1008,7 @@
         window.addEventListener('message', function (e) {
             if (e.data.data && !!e.data.data.account) {
                 if(address === '') address = e.data.data.account;
+                addressWallet = e.data.data.account;
             }
 
             if(address !== ''){
@@ -1027,8 +1077,14 @@
 
                     if(result.canTakeOut){
                         $("#canTakeout").prop('checked', true);
+                        canTakeout = true;
                     } else {
                         $("#canTakeout").prop('checked', false);
+                        canTakeout = false;
+                    }
+
+                    if(addressWallet === result.initiatorAcc){
+                        $("#canTakeout").prop('disabled', false).prop("onclick", null).off('click').click(function(){ setCanTakeout(parseInt(result.id), !canTakeout); });
                     }
 
                     if(parseInt(result.amount) == 0){
@@ -1182,6 +1238,25 @@
             </div>
             <div class="modal-body">
                 <p>星云账号地址格式错误！</p>
+            </div>
+            <div class="modal-footer" style="padding-top: 10px">
+                <br>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div id="invalidSearch" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">警告</h4>
+            </div>
+            <div class="modal-body">
+                <p>请输入收款项编号或者正确的星云账号地址！</p>
             </div>
             <div class="modal-footer" style="padding-top: 10px">
                 <br>
