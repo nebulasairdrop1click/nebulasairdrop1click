@@ -501,13 +501,20 @@
         return check;
     };
 
+    function refresh(){
+        window.location.href = window.location.href;
+    }
+
+    var packingRefreshShowed = false;
 
     function funcIntervalQuery(callback) {
         nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     var respObject = JSON.parse(resp);
-                    $('#confirm').modal('hide');
-                    $('#packing_refresh').modal('show');
+                    if(!packingRefreshShowed){
+                        $('#confirm').modal('hide');
+                        $('#packing_refresh').modal('show');
+                    }
                     function clearWait() {
                         clearInterval(wait);
                         window.location.href = window.location.href;
@@ -550,6 +557,7 @@
 
             if(window.mobileAndTabletcheck()){
                 $('#confirm').modal('hide');
+                packingRefreshShowed = false;
                 intervalQuery = setInterval(function () {
                     funcIntervalQuery(callback);
                 }, 5000);
@@ -1218,7 +1226,7 @@
                 <div class="btn btn-primary ld-ext-right running">等待用户刷新
                     <div class="ld ld-hourglass ld-spin-fast"></div>
                 </div>
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refresh()">关闭</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
