@@ -1090,7 +1090,7 @@
 
                     console.log('addressWallet: ' + addressWallet + '; initiatorAcc: ' + result.initiatorAcc);
 
-                    if(addressWallet === result.initiatorAcc){
+                    if(addressWallet === result.initiatorAcc || address === result.initiatorAcc){
                         $("#canTakeout").prop('disabled', false).prop("onclick", null).off('click').click(function(){ setCanTakeout(parseInt(result.id), !canTakeout); });
                     }
 
