@@ -368,7 +368,7 @@
 
     $('#canTakeout').click(function () {
         if(action === 'pay' || action === 'view' || action === 'takeout'){
-
+            $('#canTakeout').prop('checked', canTakeout);
         } else{
             canTakeout = !!$(this).is(':checked');
         }
@@ -685,7 +685,9 @@
             args.push(index);
             args.push(can);
             var value = 0;
+            $('#canTakeout').prop('checked', canTakeout);
             callNebPay(fun, args, value, function (resp) {
+                $('#canTakeout').prop('checked', canTakeout);
                 function clearWait() {
                     clearInterval(wait);
                     window.location.href = window.location.href;
@@ -1087,8 +1089,6 @@
                         $("#canTakeout").prop('checked', false);
                         canTakeout = false;
                     }
-
-                    console.log('addressWallet: ' + addressWallet + '; initiatorAcc: ' + result.initiatorAcc);
 
                     if(addressWallet === result.initiatorAcc || address === result.initiatorAcc){
                         $("#canTakeout").prop('disabled', false).prop("onclick", null).off('click').click(function(){ setCanTakeout(parseInt(result.id), !canTakeout); });
