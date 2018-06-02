@@ -712,7 +712,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null' || result === ''){
+                        if(result === 'null' || result === '""'){
                             return;
                         }
                         try{
@@ -759,7 +759,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null' || result === ''){
+                        if(result === 'null' || result === '""'){
                             return;
                         }
                         try{
@@ -796,7 +796,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null'  || result === ''){
+                        if(result === 'null'  || result === '""'){
                             return;
                         }
                         try{
@@ -849,7 +849,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null' || result === ''){
+                        if(result === 'null' || result === '""'){
                             return;
                         }
                         try{
@@ -889,7 +889,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null'  || result === ''){
+                        if(result === 'null'  || result === '""'){
                             return;
                         }
                         try{
@@ -938,7 +938,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null' || result === ''){
+                        if(result === 'null' || result === '""'){
                             return;
                         }
                         try{
@@ -978,7 +978,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null' || result === ''){
+                        if(result === 'null' || result === '""'){
                             return;
                         }
                         try{
@@ -1026,7 +1026,7 @@
                 innerCall(fun, args, 0, function(params){
                     neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                         var result = resp.result;
-                        if(result === 'null' || result === ''){
+                        if(result === 'null' || result === '""'){
                             return;
                         }
                         try{
@@ -1054,6 +1054,8 @@
 
     }
 
+    var noBillShowed = false;
+
     function getSplitBill(index, callback){
         var fun = 'getBillByIndex';
         var args = [];
@@ -1061,7 +1063,11 @@
         innerCall(fun, args, 0, function(params){
             neb.api.call(params.from.getAddressString(), params.to, params.value, 0, params.gasPrice, params.gasLimit, params.contract).then(function (resp) {
                 var result = resp.result;
-                if(result === 'null' || result === ''){
+                if(result === 'null' || result === '""'){
+                    if(!noBillShowed){
+                        noBillShowed = true;
+                        $("#no_bill").modal('show');
+                    }
                     return;
                 }
                 try{
@@ -1335,6 +1341,23 @@
             </div>
             <div class="modal-body">
                 <p>交易打包成功！</p>
+            </div>
+            <div class="modal-footer" style="padding-top: 10px">
+                <br>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="no_bill" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">通知</h4>
+            </div>
+            <div class="modal-body">
+                <p>不存在该收款项！</p>
             </div>
             <div class="modal-footer" style="padding-top: 10px">
                 <br>
