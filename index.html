@@ -964,6 +964,12 @@
                         $("#submit").prop('disabled', false).prop("onclick", null).off('click').click(function(){ takeout(parseInt(result.id), Unit.fromBasic(result.paid - result.takenOut, 'nas')) ; });
                     }
 
+                    if(result.canTakeOut){
+                        $("#canTakeout").prop('checked', true);
+                    } else {
+                        $("#canTakeout").prop('checked', false);
+                    }
+
                     if(parseInt(result.amount) == 0){
                         $("#unlimitedAmount").prop('checked', true);
                     } else {
