@@ -512,6 +512,7 @@
                 .then(function (resp) {
                     var respObject = JSON.parse(resp);
                     if(!packingRefreshShowed){
+                        packingRefreshShowed = true;
                         $('#confirm').modal('hide');
                         $('#packing_refresh').modal('show');
                     }
