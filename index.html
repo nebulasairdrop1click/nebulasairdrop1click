@@ -359,14 +359,21 @@
         if (parseFloat(amount.val()) <= 0) {
             average.val(0);
             amount.val(0);
+            num.val(0);
             $("#unlimitedAmount").prop("checked", true);
+            $("#unconstrainedAmount").prop("checked", true);
+            num.prop("readonly", true);
         } else if (parseInt(num.val()) > 0) {
+            num.prop("readonly", false);
             $("#unlimitedAmount").prop("checked", false);
             if(Math.floor(parseFloat(amount.val()) * 1000) < parseFloat(amount.val()) * 1000 ){
                 amount.val((Math.floor(parseFloat(amount.val()) * 1000) / 1000.0));
             }
             num.val(parseInt(num.val()));
             average.val(parseFloat(amount.val()) / parseInt(num.val()));
+        } else {
+            num.prop("readonly", false);
+            $("#unlimitedAmount").prop("checked", false);
         }
     });
 
@@ -376,6 +383,7 @@
             num.val(0);
             $("#unconstrainedAmount").prop("checked", true);
         } else if (parseInt(num.val()) > 0) {
+            if(parseFloat(amount.val()) > 0)
             $("#unconstrainedAmount").prop("checked", false);
             num.val(parseInt(num.val()));
             average.val(parseFloat(amount.val()) / parseInt(num.val()));
