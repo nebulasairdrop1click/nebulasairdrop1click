@@ -1103,7 +1103,7 @@
                     $("#average").val(Unit.fromBasic(result.billEach, 'nas'));
 
                     if(action === 'pay'){
-                        if(new BigNumber(result.amount).lte(new BigNumber(result.paid)) || result.ended){
+                        if(result.amount != 0 && (new BigNumber(result.amount).lte(new BigNumber(result.paid)) || result.ended)){
                             submit.html("收款项已结束，完成收款 "  + Unit.fromBasic(result.paid, 'nas') + ' NAS').prop('disabled', true);
                         } else if(result.billEach > 0){
                             unconstrainedPayAmount.val(Unit.fromBasic(result.billEach, 'nas'));
