@@ -421,7 +421,7 @@
 
     function recheckTransactionReceipt(hash, callback) {
         var retry = 8;
-        var retry2 = 12;
+        var retry2 = 32;
         var task = setInterval(function () {
             getTransactionReceipt(hash, function (resp) {
                 retry --;
