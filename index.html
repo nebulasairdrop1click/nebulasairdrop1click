@@ -506,7 +506,8 @@
                         clearInterval(intervalQuery);
                         $('#packing').modal('hide');
                         $('#packing_success').modal('show');
-                        callback(resp);
+                        window.location.href = window.location.href
+
                     }
                 })
                 .catch(function (err) {
