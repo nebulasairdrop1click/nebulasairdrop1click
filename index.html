@@ -395,7 +395,12 @@
         //if the extension is installed, var "webExtensionWallet" will be injected in to web page
         if (needCheckNASWallet && (typeof (webExtensionWallet) === "undefined")) {
             $(document).ready(function () {
-                $("#noWallet").modal('show');
+                if(window.mobileAndTabletcheck()){
+                    $("#noWalletMobile").modal('show');
+                } else{
+                    $("#noWallet").modal('show');
+                }
+
             });
             return false;
         }
@@ -505,11 +510,11 @@
                     $('#packing_refresh').modal('show');
                     function clearWait() {
                         clearInterval(wait);
-                        window.location.href = window.location.href
+                        window.location.href = window.location.href;
                     }
-                    var wait = setInterval(clearWait, 3000);
                     if(respObject.code === 0){
                         clearInterval(intervalQuery);
+                        var wait = setInterval(clearWait, 3000);
                     }
                 })
                 .catch(function (err) {
@@ -1124,8 +1129,7 @@
                 <h4 class="modal-title">警告</h4>
             </div>
             <div class="modal-body">
-                <p>检测到您未安装星云钱包插件。如果您使用的是桌面电脑，请使用谷歌(Chrome)浏览器并且安装<a href="https://github.com/ChengOrangeJu/WebExtensionWallet" target="_blank">星云钱包插件</a>。如果您在移动端使用，请安装<a href="https://nano.nebulas.io"
-                target="_blank">NAS nano</a>。</p>
+                <p>检测到您未安装星云钱包插件。请使用谷歌(Chrome)浏览器并且安装<a href="https://github.com/ChengOrangeJu/WebExtensionWallet" target="_blank">星云钱包插件</a>。</p>
             </div>
             <div class="modal-footer" style="padding-top: 10px">
                 <br>
@@ -1137,6 +1141,28 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div id="noWalletMobile" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">警告</h4>
+            </div>
+            <div class="modal-body">
+                <p>检测到您在移动端使用，请安装<a href="https://nano.nebulas.io" target="_blank">NAS nano</a>。</p>
+            </div>
+            <div class="modal-footer" style="padding-top: 10px">
+                <br>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="disableCheckNASWallet()">
+                    我已安装
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 
 <div id="invalidAddress" class="modal fade" tabindex="-1" role="dialog">
@@ -1184,12 +1210,12 @@
                 <h4 class="modal-title">通知</h4>
             </div>
             <div class="modal-body">
-                <p>您使用的是移动客户端，请您手动刷新获取最新支付信息，正在为您刷新。</p>
+                <p>您使用的是移动客户端，请您手动刷新获取最新支付信息。</p>
             </div>
             <div class="modal-footer" style="padding-top: 10px">
                 <br>
 
-                <div class="btn btn-primary ld-ext-right running">正在刷新
+                <div class="btn btn-primary ld-ext-right running">等待用户刷新
                     <div class="ld ld-hourglass ld-spin-fast"></div>
                 </div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
