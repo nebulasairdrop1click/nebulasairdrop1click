@@ -31,7 +31,7 @@
     <script src="js/dappConfig.js"></script>
     <script src="js/nebConfig.js"></script>
     <script src="js/mustache.min.js"></script>
-    <script src="js/big-number.js"></script>
+    <script src="js/bignumber.min.js"></script>
 </head>
 
 <body class="bg-light">
@@ -396,6 +396,25 @@
             num.prop('readonly', true);
         } else {
             num.prop('readonly', false);
+        }
+    });
+
+    var unconstrainedPayAmount = $("#unconstrainedPayAmount");
+    var submit = $("#submit");
+
+    unconstrainedPayAmount.on('input', function (e) {
+        if (parseFloat(unconstrainedPayAmount.val()) < 0) {
+            if(parseFloat(unconstrainedPayAmount.val()) < 0)
+            unconstrainedPayAmount.val(0);
+            submit.val('请输入付款金额').prop('disabled', true);
+        } else if (parseFloat(unconstrainedPayAmount.val()) > 0) {
+            unconstrainedPayAmount.val(parseFloat(unconstrainedPayAmount.val()));
+            submit.html("确认付款 " + parseFloat(unconstrainedPayAmount.val()) + ' NAS').prop('disabled', false).prop("onclick", null).off('click').click(function(){
+                if(parseFloat(unconstrainedPayAmount.val()) > 0)
+                    pay(index, $("#unconstrainedPayAmount").val(), $('#memo').val().trim()); });
+        } else if (unconstrainedPayAmount.val() === '') {
+            submit.prop('disabled', true);
+            submit.val('请输入付款金额');
         }
     });
 
@@ -803,7 +822,7 @@
                             result = JSON.parse(result);
                             var skeleton;
                             var data;
-                            var toTake = Unit.fromBasic(result.paid - result.takenOut, "nas");
+                            var toTake = Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), "nas");
                             if(result.validLimit){
                                 toTake = Math.min(Unit.fromBasic(result.takeOutLimit, "nas"), toTake);
                             }
@@ -1070,6 +1089,7 @@
                     }
                     return;
                 }
+
                 try{
                     result = JSON.parse(result);
                     $("#billName").val(result.billName);
@@ -1081,12 +1101,29 @@
                     $("#payNum").html('付款人数: (' + result.paidNum +'人已付)' );
                     $("#num").val(result.splitNum);
                     $("#average").val(Unit.fromBasic(result.billEach, 'nas'));
-                    $("#unconstrainedPayAmount").val(Unit.fromBasic(result.billEach, 'nas'));
 
                     if(action === 'pay'){
-                        $("#submit").prop('disabled', false).prop("onclick", null).off('click').click(function(){ pay(parseInt(result.id), Unit.fromBasic(result.billEach, 'nas'), $('#memo').val().trim()); });
+                        if(new BigNumber(result.amount).lte(new BigNumber(result.paid)) || result.ended){
+                            submit.html("收款项已结束，完成收款 "  + Unit.fromBasic(result.paid, 'nas') + ' NAS').prop('disabled', true);
+                        } else if(result.billEach > 0){
+                            unconstrainedPayAmount.val(Unit.fromBasic(result.billEach, 'nas'));
+                            submit.html("确认付款 "  + Unit.fromBasic(result.billEach, 'nas') + ' NAS').prop('disabled', true);
+                            $("#submit").prop('disabled', false).prop("onclick", null).off('click').click(function(){ pay(parseInt(result.id), Unit.fromBasic(result.billEach, 'nas'), $('#memo').val().trim()); });
+                        } else {
+                            submit.html("请输入付款金额").prop('disabled', true);
+                        }
                     } else if(action === 'takeout'){
-                        $("#submit").prop('disabled', false).prop("onclick", null).off('click').click(function(){ takeout(parseInt(result.id), Unit.fromBasic(result.paid - result.takenOut, 'nas')) ; });
+                        if(result.paid > result.takenOut){
+                            submit.html("确认提款 " + Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), 'nas') + ' NAS').prop('disabled', false);
+                            submit.prop('disabled', false).prop("onclick", null).off('click').click(function(){ takeout(parseInt(result.id), Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), 'nas')) ; });
+                        }
+                    } else if(action === 'takenOut'){
+                        submit.html("已提款 " + Unit.fromBasic(result.takenOut, 'nas') + ' NAS').prop('disabled', true);
+                    } else if(action === 'view'){
+                        submit.html("已付款 " + Unit.fromBasic(result.paidAccs[address], 'nas') + ' NAS').prop('disabled', true);
+                    } else{
+                        action = 'pay';
+                        submit.html("确认付款").prop('disabled', true);
                     }
 
                     if(result.canTakeOut){
@@ -1111,9 +1148,6 @@
                         $("#unconstrainedAmount").prop('checked', true);
                         if(action === 'pay'){
                             $("#unconstrainedPayAmount").prop('disabled', false);
-                            $("#submit").prop('disabled', false).prop("onclick", null).off('click').click(function(){
-                                if(parseFloat($("#unconstrainedPayAmount").val()) > 0)
-                                    pay(parseInt(result.id), $("#unconstrainedPayAmount").val(), $('#memo').val().trim()); });
                         }
                     } else {
                         $("#unconstrainedAmount").prop('checked', false);
@@ -1149,25 +1183,25 @@
         if(urlParams.has('action')){
             action = urlParams.get('action');
             if(action === 'pay'){
-                $("#submit").html("确认付款").prop('disabled', true);
+                submit.html("确认付款").prop('disabled', true);
                 $("#payAmountDiv").prop('hidden', false);
                 $("#unconstrainedPayAmount").prop('disabled', true);
                 $('#memoDiv').prop('hidden', false);
             } else if(action === 'takeout'){
-                $("#submit").html("确认提款").prop('disabled', true);
+                submit.html("确认提款").prop('disabled', true);
             } else if(action === 'takenOut'){
-                $("#submit").html("已提款").prop('disabled', true);
+                submit.html("已提款").prop('disabled', true);
             } else if(action === 'view'){
-                $("#submit").html("已付款").prop('disabled', true);
+                submit.html("已付款").prop('disabled', true);
             } else{
                 action = 'pay';
-                $("#submit").html("确认付款").prop('disabled', true);
+                submit.html("确认付款").prop('disabled', true);
             }
         } else {
             action = 'pay';
             $("#payAmountDiv").prop('hidden', false);
             $("#unconstrainedPayAmount").prop('disabled', true);
-            $("#submit").html("确认付款").prop('disabled', true);
+            submit.html("确认付款").prop('disabled', true);
             $('#memoDiv').prop('hidden', false);
         }
 
@@ -1199,7 +1233,7 @@
 
         getSplitBill(index, function(){});
     } else{
-        $("#submit").html("确认收款");
+        submit.html("确认收款");
     }
 
     getInitiatorBill();
