@@ -1133,7 +1133,7 @@
                         if(result.amount != 0 && (new BigNumber(result.amount).lte(new BigNumber(result.paid)) || result.ended)){
                             submit.html("收款项已结束，完成收款 "  + Unit.fromBasic(result.paid, 'nas') + ' NAS').prop('disabled', true);
                         } else if(result.billEach > 0){
-                            if(addressWallet !== '' && new BigNumber(result.paidAccs[addressWallet]).gte(new BigNumber(result.billEach))){
+                            if(addressWallet !== '' && typeof (result.paidAccs[addressWallet]) != 'undefined' && new BigNumber(result.paidAccs[addressWallet]).gte(new BigNumber(result.billEach))){
                                 submit.html("已付款 " + Unit.fromBasic(result.paidAccs[addressWallet], 'nas') + ' NAS').prop('disabled', true);
                             } else {
                                 unconstrainedPayAmount.val(Unit.fromBasic(result.billEach, 'nas'));
