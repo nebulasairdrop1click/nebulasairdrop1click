@@ -1154,10 +1154,17 @@
                             submit.html("请输入付款金额").prop('disabled', true);
                         }
                     } else if(action === 'takeout'){
-                        if(new BigNumber(result.paid).gt(new BigNumber(result.takenOut))){
-                            submit.html("确认提款 " + Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), 'nas') + ' NAS').prop('disabled', false);
-                            submit.prop('disabled', false).prop("onclick", null).off('click').click(function(){ takeout(parseInt(result.id), Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), 'nas')) ; });
+                        if(result.canTakeOut){
+                            if(new BigNumber(result.paid).gt(new BigNumber(result.takenOut))){
+                                submit.html("确认提款 " + Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), 'nas') + ' NAS').prop('disabled', false);
+                                submit.prop('disabled', false).prop("onclick", null).off('click').click(function(){ takeout(parseInt(result.id), Unit.fromBasic(new BigNumber(result.paid).minus(new BigNumber(result.takenOut)), 'nas')) ; });
+                            } else {
+                                submit.html("您已提款 " + Unit.fromBasic(new BigNumber(result.takenOut), 'nas') + ' NAS');
+                            }
+                        } else {
+                            submit.html("发起人暂未开放您的提款权限");
                         }
+
                     } else if(action === 'takenOut'){
                         submit.html("已提款 " + Unit.fromBasic(result.takenOut, 'nas') + ' NAS').prop('disabled', true);
                     } else if(action === 'view'){
