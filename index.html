@@ -348,6 +348,11 @@
             amount.val(parseFloat(amount.val()) * rate[UNIT] / rate[P_UNIT]);
             if (parseInt(num.val()) == 0) {
                 $("#average").val(0);
+                if(action === 'pay'){
+                    submit.html("确认付款 " + parseFloat(parseFloat(unconstrainedPayAmount.val() / rate[UNIT] * rate['nas']).toFixed(8)) + ' NAS').prop('disabled', false).prop("onclick", null).off('click').click(function(){
+                        if(parseFloat(unconstrainedPayAmount.val()) > 0)
+                            pay(index, parseFloat(parseFloat(unconstrainedPayAmount.val() / rate[UNIT] * rate['nas']).toFixed(8)), $('#memo').val().trim()); });
+                }
             } else {
                 num.val(parseInt(num.val()));
                 $("#average").val(parseFloat(amount.val()) / parseInt(num.val()));
@@ -433,9 +438,9 @@
         } else if (parseFloat(unconstrainedPayAmount.val()) > 0) {
             if(unconstrainedPayAmount.val().startsWith('0') && !unconstrainedPayAmount.val().startsWith('0.'))
                 unconstrainedPayAmount.val(parseFloat(unconstrainedPayAmount.val()));
-            submit.html("确认付款 " + parseFloat(unconstrainedPayAmount.val()) + ' NAS').prop('disabled', false).prop("onclick", null).off('click').click(function(){
+            submit.html("确认付款 " + parseFloat(parseFloat(unconstrainedPayAmount.val() / rate[UNIT] * rate['nas']).toFixed(8)) + ' NAS').prop('disabled', false).prop("onclick", null).off('click').click(function(){
                 if(parseFloat(unconstrainedPayAmount.val()) > 0)
-                    pay(index, $("#unconstrainedPayAmount").val(), $('#memo').val().trim()); });
+                    pay(index, parseFloat(parseFloat(unconstrainedPayAmount.val() / rate[UNIT] * rate['nas']).toFixed(8)), $('#memo').val().trim()); });
         } else if (unconstrainedPayAmount.val() === '') {
             submit.prop('disabled', true);
             submit.val('请输入付款金额');
@@ -1155,9 +1160,9 @@
                                 unconstrainedPayAmount.val(parseFloat(unconstrainedPayAmount.val()));
                             if(Math.ceil(parseFloat(unconstrainedPayAmount.val()) * Math.pow(10, 8)) > parseFloat(unconstrainedPayAmount.val()) * Math.pow(10, 8))
                                 unconstrainedPayAmount.val(Math.ceil(parseFloat(unconstrainedPayAmount.val()) * Math.pow(10, 8)) / Math.pow(10, 8));
-                            submit.html("确认付款 " + parseFloat(unconstrainedPayAmount.val()) + ' NAS').prop('disabled', false).prop("onclick", null).off('click').click(function(){
+                            submit.html("确认付款 " + parseFloat(parseFloat(unconstrainedPayAmount.val() / rate[UNIT] * rate['nas']).toFixed(8)) + ' NAS').prop('disabled', false).prop("onclick", null).off('click').click(function(){
                                 if(parseFloat(unconstrainedPayAmount.val()) > 0)
-                                    pay(index, $("#unconstrainedPayAmount").val(), $('#memo').val().trim()); });
+                                    pay(index, parseFloat(parseFloat(unconstrainedPayAmount.val() / rate[UNIT] * rate['nas']).toFixed(8)), $('#memo').val().trim()); });
                         } else  if (unconstrainedPayAmount.val() === '')  {
                             submit.html("请输入付款金额").prop('disabled', true);
                         }
