@@ -453,7 +453,8 @@
         }
     });
 
-    var needCheckNASWallet = true;
+    var needCheckNASWallet = localStorage.getItem('needCheckNASWallet') || '1';
+    needCheckNASWallet = parseInt(needCheckNASWallet);
     var invoker = null;
 
     function checkNASWallet(_invoker) {
@@ -476,6 +477,7 @@
 
     function disableCheckNASWallet() {
         needCheckNASWallet = false;
+        localStorage.setItem('needCheckNASWallet', 0);
         if(invoker != null){
             invoker.click();
         }
