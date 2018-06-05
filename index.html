@@ -493,13 +493,6 @@
         })
     }
 
-    function getTransactionMobileReceipt(serialNumber, callback){
-        $.get("https://pay.nebulas.io/api/mainnet/pay/query?payId=" + serialNumber, function (resp) {
-            callback && callback(resp)
-        })
-    }
-
-
     function recheckTransactionReceipt(hash, callback) {
         var retry = 8;
         var retry2 = 32;
@@ -537,7 +530,7 @@
                                 }
                             } else {
                                 clearInterval(task);
-                                callback && callback(resp);
+                                callback && callback(resp.result);
                             }
                         });
                     } catch(err){
@@ -547,7 +540,7 @@
                 var status = resp.result.status;
                 if(status == 1){
                     clearInterval(task);
-                    callback && callback(resp);
+                    callback && callback(resp.result);
                 }
             })
         }, 1000);
@@ -581,13 +574,19 @@
         window.location.href = window.location.href;
     }
 
+
+    function getMobileTransactionReceipt(serialNumber, callback){
+        $.get("https://pay.nebulas.io/api/mainnet/pay/query?payId=" + serialNumber, function (resp) {
+            callback && callback(resp)
+        })
+    }
+
     var retryQueryTime = 10;
 
-    function recheckTransactionMobileReceipt(serialNumber, callback) {
+    function recheckMobileTransactionReceipt(serialNumber, callback) {
         retryQueryTime --;
 
-        getTransactionMobileReceipt(serialNumber, function (resp) {
-            resp = JSON.parse(resp);
+        getMobileTransactionReceipt(serialNumber, function (resp) {
             $('#confirm').modal('hide');
             $('#packing_refresh').modal('show');
             if (resp instanceof Object) {
@@ -653,10 +652,9 @@
             });
 
             if(window.mobileAndTabletcheck()){
-                $('#confirm').modal('hide');
                 retryQueryTime = 10;
                 intervalQuery = setInterval(function () {
-                    recheckTransactionMobileReceipt(serialNumber, callback);
+                    recheckMobileTransactionReceipt(serialNumber, callback);
                 }, 3500);
             }
 
@@ -694,7 +692,7 @@
                     callNebPay(fun, args, value, function(resp){
                         function clearWait() {
                             clearInterval(wait);
-                            window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname+ "?index="+ resp.result.execute_result +"&action=pay&address=" + resp.result.from;
+                            window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname+ "?index="+ resp.execute_result +"&action=pay&address=" + resp.from;
                         }
                         var wait = setInterval(clearWait, 2000);
                     });
@@ -718,9 +716,6 @@
         }
     }
 
-
-    //    setCanTakeout
-
     function pay(index, value, memo){
         if (checkNASWallet(submit)) {
             var fun = 'pay';
@@ -730,7 +725,7 @@
             callNebPay(fun, args, value, function (resp) {
                 function clearWait() {
                     clearInterval(wait);
-                    window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname + "?index=" + index +"&action=view&address=" + resp.result.from;
+                    window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname + "?index=" + index +"&action=view&address=" + resp.from;
                 }
                 var wait = setInterval(clearWait, 2000);
 
@@ -748,7 +743,7 @@
             callNebPay(fun, args, value, function (resp) {
                 function clearWait() {
                     clearInterval(wait);
-                    window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname + "?index=" + index +"&action=takenOut&address=" + resp.result.from;
+                    window.location.href = window.location.protocol + '//' + window.location.host + window.location.pathname + "?index=" + index +"&action=takenOut&address=" + resp.from;
                 }
                 var wait = setInterval(clearWait, 2000);
 
