@@ -664,11 +664,11 @@
 
                 intervalQuery = setInterval(function () {
                     recheckMobileTransactionReceipt(serialNumber, function(resp){
-                        if(resp.data.status == 1){
+                        if(resp.status == 1){
                             $('#packing_refresh').modal('hide');
                             $('#packing_success').modal('show');
                             callback && callback(resp);
-                        } else if(resp.data.status == 0){
+                        } else if(resp.status == 0){
                             $('#packing_refresh').modal('hide');
                             $('#fail').modal('show');
                             wait = setInterval(clearWait, 2000);
