@@ -489,7 +489,7 @@
         $.post(rpcURL + '/v1/user/getTransactionReceipt', JSON.stringify({
             "hash": hash
         }), function (resp) {
-            callback(resp)
+            callback && callback(resp)
         })
     }
 
@@ -531,7 +531,7 @@
                                 }
                             } else {
                                 clearInterval(task);
-                                callback(resp);
+                                callback && callback(resp);
                             }
                         });
                     } catch(err){
@@ -541,7 +541,7 @@
                 var status = resp.result.status;
                 if(status == 1){
                     clearInterval(task);
-                    callback(resp);
+                    callback && callback(resp);
                 }
             })
         }, 1000);
@@ -581,6 +581,11 @@
         nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     var respObject = JSON.parse(resp);
+                    if(!packingRefreshShowed){
+                        packingRefreshShowed = true;
+                        $('#confirm').modal('hide');
+                        $('#packing_refresh').modal('show');
+                    }
                     if (respObject instanceof Object) {
                         if (resp.msg === 'success') {
                             clearInterval(intervalQuery);
@@ -611,7 +616,7 @@
                         recheckTransactionReceipt(hash, function (resp) {
                             $('#packing').modal('hide');
                             $('#packing_success').modal('show');
-                            callback(resp);
+                            callback && callback(resp);
                         })
                     } else {
                         $('#reject').modal('show');
