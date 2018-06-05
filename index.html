@@ -493,6 +493,12 @@
         })
     }
 
+    function getTransactionMobileReceipt(serialNumber, callback){
+        $.get("https://pay.nebulas.io/api/mainnet/pay/query?payId=" + serialNumber, function (resp) {
+            callback && callback(resp)
+        })
+    }
+
 
     function recheckTransactionReceipt(hash, callback) {
         var retry = 8;
@@ -577,38 +583,45 @@
 
     var retryQueryTime = 10;
 
-    function funcIntervalQuery(callback) {
+    function recheckTransactionMobileReceipt(serialNumber, callback) {
         retryQueryTime --;
-        if(retryQueryTime <= 0){
-            clearInterval(intervalQuery);
-            return;
-        }
-        alert(serialNumber);
-        nebPay.queryPayInfo(serialNumber, {callback: "https://pay.nebulas.io/api/mainnet/pay"})   //search transaction result from server (result upload to server by app)
-                .then(function (resp) {
-                    resp = JSON.parse(resp);
-                    $('#confirm').modal('hide');
-                    $('#packing_refresh').modal('show');
-                    if (resp instanceof Object) {
-                        if (resp.msg === 'success') {
-                            clearInterval(intervalQuery);
-                            callback && callback(resp.data)
-                        }
-                    }
 
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
+        getTransactionMobileReceipt(serialNumber, function (resp) {
+            resp = JSON.parse(resp);
+            $('#confirm').modal('hide');
+            $('#packing_refresh').modal('show');
+            if (resp instanceof Object) {
+                if(retryQueryTime <= 0){
+//            {"code":1,"data":{},"msg":"payId 9IMybuY6eQkouc2Avwb8rEcae7oiZLnd does not exist"}
+                    clearInterval(intervalQuery);
+                    if(resp.code == 1){
+                        var query_overtime = $('#query_overtime');
+                        var query_link = $('#query_link');
+                        if(chainId == 1){
+                            query_link.prop('href','https://explorer.nebulas.io/#/address/'+ dappAddress +'#/').prop('target', '_blank_');
+                        } else {
+                            query_link.prop('href','https://explorer.nebulas.io/#/testnet/address/'+ dappAddress +'#/').prop('target', '_blank_');
+                        }
+                        query_overtime.modal('show');
+                        return;
+                    }
+                }
+                if (resp.msg === 'success') {
+                    clearInterval(intervalQuery);
+                    callback && callback(resp.data)
+                }
+            }
+
+        })
     }
 
     var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
     var nebPay = new NebPay();
-    var serialNumber;
     var intervalQuery;
 
     function callNebPay(fun, args, value, callback) {
         $('#confirm').modal('show');
+        var serialNumber;
         innerCall(fun, args, value, function (params) {
             serialNumber = nebPay.call(params.to, params.value, params.contract.function, params.contract.args, {
                 qrcode: {
@@ -643,8 +656,8 @@
                 $('#confirm').modal('hide');
                 retryQueryTime = 10;
                 intervalQuery = setInterval(function () {
-                    funcIntervalQuery(callback);
-                }, 5000);
+                    recheckTransactionMobileReceipt(serialNumber, callback);
+                }, 3500);
             }
 
 
