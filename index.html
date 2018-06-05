@@ -575,7 +575,14 @@
         window.location.href = window.location.href;
     }
 
+    var retryQueryTime = 10;
+
     function funcIntervalQuery(callback) {
+        retryQueryTime --;
+        if(retryQueryTime <= 0){
+            clearInterval(intervalQuery);
+            return;
+        }
         nebPay.queryPayInfo(serialNumber, {callback: "https://pay.nebulas.io/api/mainnet/pay"})   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     resp = JSON.parse(resp);
@@ -632,6 +639,7 @@
 
             if(window.mobileAndTabletcheck()){
                 $('#confirm').modal('hide');
+                retryQueryTime = 10;
                 intervalQuery = setInterval(function () {
                     funcIntervalQuery(callback);
                 }, 5000);
