@@ -608,7 +608,18 @@
         $('#confirm').modal('show');
         innerCall(fun, args, value, function (params) {
             serialNumber = nebPay.call(params.to, params.value, params.contract.function, params.contract.args, {
+                qrcode: {
+                    showQRCode: false
+                },
+                goods: {
+                    name: "test",
+                    desc: "test goods"
+                },
+                callback:"https://pay.nebulas.io/api/mainnet/pay",
                 listener: function (resp) {
+                    if(window.mobileAndTabletcheck()){
+                       return;
+                    }
                     $('#confirm').modal('hide');
                     if (resp !== 'Error: Transaction rejected by user') {
                         $('#packing').modal('show');
