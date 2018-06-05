@@ -607,7 +607,7 @@
                         return;
                     }
                 }
-                if (resp.msg === 'success') {
+                if (resp.msg === 'success' && resp.data.status == 1) {
                     clearInterval(intervalQuery);
                     callback && callback(resp.data)
                 }
